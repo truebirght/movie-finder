@@ -1,5 +1,3 @@
-import ElasticsearchConfig from '../../config/elasticsearch.env.js'
-
 const elasticsearch = require('elasticsearch');
 
 /**
@@ -11,7 +9,7 @@ const elasticsearch = require('elasticsearch');
  * @type {elasticsearch.Client}
  */
 const elasticsearchClient = new elasticsearch.Client({
-  host: ElasticsearchConfig.elasticsearch_host,
+  host: process.env.elasticsearch_host,
   cors : true,
   keepAlive : false,
   // log: 'trace'

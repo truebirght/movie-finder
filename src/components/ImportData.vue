@@ -22,8 +22,9 @@
 <script>
 
   import es_bulk from '../api/bulk.js';
+  var req = require('sync-request');
   const each = require('foreach');
-
+  
   export default {
     name: 'ImportData',
     created : function () {
@@ -82,7 +83,7 @@
       getDataFromJSON : function () {
         this.fileSeq = this.fileSeq + 1;
         this.movieResult = [];
-        let movieRawList = require('../rawdata/searchMovieList_'+ this.fileSeq + '.json');
+        let movieRawList = JSON.parse(req('GET','https://raw.githubusercontent.com/heejunghwang/movie-finder/master/src/rawdata/searchMovieList_' + this.fileSeq + '.json').getBody());
         this.movieResult = movieRawList.movieListResult.movieList;
         this.refineData()
       },
