@@ -4,5 +4,5 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  elasticsearch_host : '"elastic.javacafe.io:20010"'
+  elasticsearch_host : '"es1.elasitcbook.io:9200"'
 })
