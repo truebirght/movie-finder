@@ -26,8 +26,9 @@
       return {
         menuArray: [
           {name : 'Search', link : './', active : true},
-          {name : 'ImportData', link : './import-data', active : false},
-          {name : 'AnalyzeText', link : './analyze-text', active : false},
+          {name : 'Create Index', link : './create-index', active : false},
+          {name : 'Manage Index', link : './manage', active : false},
+          {name : 'Import Data', link : './import-data', active : false},
         ],
       }
     },

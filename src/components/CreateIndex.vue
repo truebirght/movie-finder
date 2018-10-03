@@ -17,7 +17,7 @@
         <div class="form-group row">
           <label for="inputIndexName" class="col-sm-2 col-form-label"></label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="inlineRadio1" value="movie" v-model="indexName" @click="setKoreanSEunjeonAnalyzer">
+            <input class="form-check-input" type="radio" id="inlineRadio1" value="movie" v-model="indexName" @click="setKoreanNoriAnalyzer">
             <label class="form-check-label" for="inlineRadio1">movie</label>
           </div>
           <div class="form-check form-check-inline">
@@ -40,152 +40,162 @@
 </template>
 
 <script>
+import es_cat from "../api/cat.js";
+import es_indices from "../api/indices.js";
+import router from "../router";
 
-  import es_cat from '../api/cat.js';
-  import es_indices from '../api/indices.js';
-  import router from '../router'
-
-  export default {
-    name: 'CreateIndex',
-    created() {
-      this.setDefaultValue();
-      this.getIndexList()
+export default {
+  name: "CreateIndex",
+  created() {
+    this.setDefaultValue();
+    this.getIndexList();
+  },
+  data() {
+    return {
+      indexName: "",
+      reqBody: "",
+      indexList: ""
+    };
+  },
+  methods: {
+    /**
+     * 화면 로딩시 기본값을 설정한다.
+     */
+    setDefaultValue: function() {
+      this.indexName = "movie";
+      this.setKoreanNoriAnalyzer();
     },
-    data () {
-      return {
-        indexName : '',
-        reqBody : '',
-        indexList : ''
-      }
+    /**
+     * 인덱스 리스트를 조회한다
+     */
+    getIndexList: function() {
+      let self = this;
+      es_cat.getIndexList().then(result => {
+        self.indexList = result;
+      });
     },
-    methods : {
-      /**
-       * 화면 로딩시 기본값을 설정한다.
-       */
-      setDefaultValue : function () {
-        this.indexName = 'movie'
-        this.setKoreanSEunjeonAnalyzer();
-      },
-      /**
-       * 인덱스 리스트를 조회한다
-       */
-      getIndexList : function () {
-        let self = this;
-        es_cat.getIndexList().then((result)=>{
-          self.indexList = result;
-        })
-      },
-      /**
-       * 인덱스 생성을 한다.
-       */
-      createNewIndex : function () {
-        const indexName = this.indexName;
-        const reqBody = this.reqBody;
-        es_indices.createIndex(indexName, reqBody).then((result) => {
-          if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
+    /**
+     * 인덱스 생성을 한다.
+     */
+    createNewIndex: function() {
+      const indexName = this.indexName;
+      const reqBody = this.reqBody;
+      es_indices.createIndex(indexName, reqBody).then(result => {
+        if (
+          typeof result !== "undefined" &&
+          result !== null &&
+          result.acknowledged === true
+        ) {
+          window.location.reload(true);
+        }
+      });
+    },
+    /**
+     * 인덱스 삭제를 한다.
+     * @param indexName
+     */
+    deleteIndex: function(indexName) {
+      if (confirm(indexName + "를 정말 삭제하겠습니까?")) {
+        es_indices.deleteIndex(indexName).then(result => {
+          if (
+            typeof result !== "undefined" &&
+            result !== null &&
+            result.acknowledged === true
+          ) {
             window.location.reload(true);
           }
         });
-      },
-      /**
-       * 인덱스 삭제를 한다.
-       * @param indexName
-       */
-      deleteIndex : function (indexName) {
-        if(confirm(indexName+"를 정말 삭제하겠습니까?")){
-          es_indices.deleteIndex(indexName).then( (result) =>{
-            if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
-              window.location.reload(true);
-            }
-          })
-        }
-      },
-      /**
-       * 인덱스 매핑 설정을 한다.
-       * @param indexName
-       */
-      mappingIndex : function (indexName) {
-        router.push({
-          name: "MappingField",
-          query : {indexName : indexName}
-        });
-      },
-      setKoreanSEunjeonAnalyzer : function () {
-        const sEunjeonAnalyzer= {
-          settings : {
-            index : {
-              analysis : {
-                analyzer:{
-                  korean : {
-                    type : "custom",
-                    tokenizer:"seunjeon_default_tokenizer"
-                  }
-                },
-                tokenizer: {
-                  seunjeon_default_tokenizer: {
-                    type: "seunjeon_tokenizer",
-                    index_eojeol: false,
-                    user_words: ["낄끼+빠빠,-100", "c\\+\\+", "어그로", "버카충", "abc마트"]
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        this.reqBody = JSON.stringify(sEunjeonAnalyzer, undefined, 4);
-      },
-      /**
-       * 한글 자모분석기를 설정한다.
-       */
-      setKoreanJamoAnalyzer : function () {
-        const koreanJamoAnalyzer = {
-          settings : {
+      }
+    },
+    /**
+     * 인덱스 매핑 설정을 한다.
+     * @param indexName
+     */
+    mappingIndex: function(indexName) {
+      router.push({
+        name: "MappingField",
+        query: { indexName: indexName }
+      });
+    },
+    setKoreanNoriAnalyzer: function() {
+      const noriAnalyzer = {
+        settings: {
+          index: {
             analysis: {
-              filter : {
-                hangul_jamo_filter : {
-                  type : "hangul_jamo",
-                  name: "jamo"
-                },
-                hangul_chosung_filter : {
-                  type : "hangul_chosung",
-                  name: "chosung"
-                },
-                edge100Gram: {
-                  type: "edgeNGram",
-                  min_gram: 1,
-                  max_gram: 100,
-                  side: "front"
+              analyzer: {
+                korean: {
+                  type: "custom",
+                  tokenizer: "nori_default_tokenizer"
                 }
               },
-              analyzer: {
-                hangul_jamo_analyzer: {
-                  type: "custom",
-                  tokenizer: "keyword",
-                  filter: ["hangul_jamo_filter", "edge100Gram", "lowercase"]
-                },
-                hangul_chosung_analyzer: {
-                  type: "custom",
-                  tokenizer: "keyword",
-                  filter: ["hangul_chosung_filter", "edge100Gram", "lowercase"],
-                },
-                hangul_jamo_search_analyzer: {
-                  type: "custom",
-                  tokenizer: "keyword",
-                  filter: ["hangul_jamo_filter", "lowercase"]
-                },
-                hangul_chosung_search_analyzer: {
-                  type : "custom",
-                  tokenizer : "keyword",
-                  filter: ["lowercase"]
-                },
+              tokenizer: {
+                nori_default_tokenizer: {
+                  type: "nori_tokenizer",
+                  decompound_mode: "mixed",
+                  user_dictionary: "userdict_ko.txt"
+                }
               }
             }
           }
         }
+      };
 
-        this.reqBody = JSON.stringify(koreanJamoAnalyzer, undefined, 4);
-      }
+      this.reqBody = JSON.stringify(noriAnalyzer, undefined, 4);
+    },
+    /**
+     * 한글 자모분석기를 설정한다.
+     */
+    setKoreanJamoAnalyzer: function() {
+      const koreanJamoAnalyzer = {
+        settings: {
+          analysis: {
+            filter: {
+              javacafe_chosung: {
+                type: "javacafe_chosung"
+              },
+              javacafe_jamo: {
+                type: "javacafe_jamo"
+              },
+              edge100Gram: {
+                type: "edgeNGram",
+                min_gram: 1,
+                max_gram: 100,
+                side: "front"
+              }
+            },
+            analyzer: {
+              hangul_jamo_analyzer: {
+                type: "custom",
+                tokenizer: "keyword",
+                filter: ["javacafe_jamo", "edge100Gram", "lowercase"]
+              },
+              hangul_jamo_analyzer: {
+                type: "custom",
+                tokenizer: "keyword",
+                filter: ["javacafe_jamo", "edge100Gram", "lowercase"]
+              },
+              hangul_chosung_analyzer: {
+                type: "custom",
+                tokenizer: "keyword",
+                filter: ["javacafe_chosung", "edge100Gram", "lowercase"]
+              },
+              hangul_jamo_search_analyzer: {
+                type: "custom",
+                tokenizer: "keyword",
+                filter: ["javacafe_jamo", "lowercase"]
+              },
+              hangul_chosung_search_analyzer: {
+                type: "custom",
+                tokenizer: "keyword",
+                filter: ["javacafe_chosung","lowercase"]
+              }
+            }
+          }
+        }
+      };
+
+      this.reqBody = JSON.stringify(koreanJamoAnalyzer, undefined, 4);
     }
   }
+};
 </script>

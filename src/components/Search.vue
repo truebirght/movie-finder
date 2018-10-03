@@ -78,6 +78,7 @@
   const each = require('foreach');
   const commaNumber = require('comma-number')
   import { directive as onClickaway } from 'vue-clickaway';
+//  const waitingDialog = require('bootstrap-waitingfor');
 
   export default {
   name: 'Search',
@@ -396,6 +397,8 @@
         'index' : indexName,
         'body' : bodyReq
       };
+      
+      console.log(reqParam);
 
       es_search.search(reqParam).then((result)=>{
         each(result.hits.hits, (value, key, array) => {

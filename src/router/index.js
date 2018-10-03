@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Search from '@/components/Search'
 import ImportData from '@/components/ImportData'
 import CreateIndex from '@/components/CreateIndex'
+import Manage from '@/components/Manage'
 import MappingField from '@/components/MappingField'
 import AnalyzeText from '@/components/AnalyzeText'
 import Menu from '@/components/Menu'
@@ -26,6 +27,11 @@ export default new Router({
       path: '/create-index',
       name: 'CreateIndex',
       component: CreateIndex
+    },
+    {
+      path: '/manage',
+      name: 'Manage',
+      component: Manage
     },
     {
       path: '/mapping-index',

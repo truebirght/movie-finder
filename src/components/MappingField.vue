@@ -31,11 +31,11 @@
               <div class="col-sm-10">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" id="inlineRadio1" value="sEunjeon" v-model="fieldAnalyzer" @click="setSEunjeonFeilds">
-                  <label class="form-check-label" for="inlineRadio1">은전한닢s</label>
+                  <label class="form-check-label" for="inlineRadio1">노리</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" id="inlineRadio2" value="jamo" v-model="fieldAnalyzer" @click="setJamoFields">
-                  <label class="form-check-label" for="inlineRadio2">자모분석기</label>
+                  <label class="form-check-label" for="inlineRadio2">javacafe_자모분석기</label>
                 </div>
               </div>
             </div>
@@ -94,6 +94,7 @@
           search_analyzer : "korean"
         }
 
+        
         const sEunjeonBoostAnalyzer = {
           type: "text",
           analyzer : "korean",

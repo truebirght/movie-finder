@@ -57,7 +57,7 @@
     name: 'AnalyzeText',
     created : function () {
       this.indexName = 'movie'
-      this.testText =  '아버지가방에들어가신다'
+      this.testText =  '우리집 강아지는 복슬강아지'
       this.analyzer = 'korean'
     },
     data () {
