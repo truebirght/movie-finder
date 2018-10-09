@@ -398,7 +398,6 @@
         'body' : bodyReq
       };
       
-      console.log(reqParam);
 
       es_search.search(reqParam).then((result)=>{
         each(result.hits.hits, (value, key, array) => {
